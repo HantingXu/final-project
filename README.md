@@ -8,14 +8,30 @@ Before submitting your first milestone, _you must get your project idea and scop
 ### Design Doc
 
 #### Introduction
-- What motivates your project?
+The project stems from a fascination with procedural weather systems discovered during a past internship. Procedurally generated weather offers the exciting potential to create realistic, responsive environments that enhance immersion in virtual worlds, whether in games, simulations, or educational tools.
+
+Our goal is to build a fully procedural and self-evolving weather system that can adapt to both user inputs and intrinsic rules, allowing users to interactively control and visualize weather on both macro and micro levels. This simulation will feature various adjustable parameters and zoom capabilities to provide users with a versatile tool for understanding and exploring weather dynamics.
 
 #### Goal
 - The final outcome of our project is to produce a fully procedural-generated and self-evolving weather system based on some user inputs, like height maps or other distribution maps. Also, the project should provide the users with some additional tunable parameters to change the generated environment and allow user to zoom in/out to view the simulated result on both micro and marco levels.
 
 #### Inspiration/reference:
-- You must have some form of reference material for your final project. Your reference may be a research paper, a blog post, some artwork, a video, another class at Penn, etc.  
-- Include in your design doc links to and images of your reference material.
+
+- Geographical Adventures
+  
+|![image](https://github.com/user-attachments/assets/ad62093c-f6d9-4aac-b881-e506f6c42c4e)|
+|:--:|
+|*[Geographical Adventures by Sebastian Lagu](https://github.com/SebLague/Geographical-Adventures)*|
+
+This little geography game resembles what we hope to achieve for our macro scopic simulation, both visually and logically. We hope to draw inspiration from how Sebastian used real world geography data to simulate weather.
+
+- Procedural Weather Patterns
+  
+|![image](https://github.com/user-attachments/assets/fd084460-9d45-4817-9418-723da2cb43c0)|
+|:--:|
+|*[Procedural Weather Patterns by Nick](https://nickmcd.me/2018/07/10/procedural-weather-patterns/)*|
+
+Our project was inspired by Nick's blog post, where they discussed how to procedrually generate dynamic weather. Although our project will likely be at a bigger scope, we will definitely refer to their discussion on procedurally generating weather maps (like precipitation map, wind map etc.).
 
 #### Specification:
 - Our project should be able to generate terrain and other required maps either automatically by some random seed or by reading some user provided maps.
