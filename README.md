@@ -1,36 +1,52 @@
 # Final Project!
 
-This is it! The culmination of your procedural graphics experience this semester. For your final project, we'd like to give you the time and space to explore a topic of your choosing. You may choose any topic you please, so long as you vet the topic and scope with an instructor or TA. We've provided some suggestions below. The scope of your project should be roughly 1.5 homework assignments). To help structure your time, we're breaking down the project into 4 milestones:
+This is it! The culmination of your procedural graphics experience this semester. For your final project, we'd like to give you the time and space to explore a topic of your choosing. You may choose any topic you please, so long as you vet the topic and scope with an instructor or TA. We've provided some suggestions below. The scope of your project should be roughly 1.5 homework assignments. To help structure your time, we're breaking down the project into 4 milestones:
 
 ## Project planning: Design Doc (due 11/6)
 Before submitting your first milestone, _you must get your project idea and scope approved by Rachel, Adam or a TA._
 
 ### Design Doc
-Start off by forking this repository. In your README, write a design doc to outline your project goals and implementation plan. It must include the following sections:
 
 #### Introduction
 - What motivates your project?
 
 #### Goal
-- What do you intend to achieve with this project?
+- The final outcome of our project is to produce a fully procedural-generated and self-evolving weather system based on some user inputs, like height maps or other distribution maps. Also, the project should provide the users with some additional tunable parameters to change the generated environment and allow user to zoom in/out to view the simulated result on both micro and marco levels.
 
 #### Inspiration/reference:
 - You must have some form of reference material for your final project. Your reference may be a research paper, a blog post, some artwork, a video, another class at Penn, etc.  
 - Include in your design doc links to and images of your reference material.
 
 #### Specification:
-- Outline the main features of your project.
+- Our project should be able to generate terrain and other required maps either automatically by some random seed or by reading some user provided maps.
+- The system should provide some intuitive parameters for users to adjust the weather as they like.
+- The modeled environment should be presented in a certain levels of details that allow user to zoom in or out for viewing.
 
 #### Techniques:
-- What are the main technical/algorithmic tools you’ll be using? Give an overview, citing specific papers/articles.
+- Noise functions will be involved in process of terrain, other related maps and cloud/rain generation.
+- For the map generation part, we think this [article](https://medium.com/@henchman/adventures-in-procedural-terrain-generation-part-1-b64c29e2367a) and [this repository](https://github.com/weigert/proceduralweather) might be useful.
+- For the weather transition and how different variable might act on one another, we might refer to [this paper](http://www.ignaciogarciadorado.com/p/2017_TOG/2017_TOG.pdf) as well.
+- For the rendering part, we might refer to the [GDC talk](https://www.youtube.com/watch?v=mGHCOOnI5aE).
 
 #### Design:
-- How will your program fit together? Make a simple free-body diagram illustrating the pieces.
+![](Images/flowchart.png)
 
 #### Timeline:
-- Create a week-by-week set of milestones for each person in your group. Make sure you explicitly outline what each group member's duties will be.
+- The focus of Milestone 1 would be mainly about generating terrain and other required map for weather.
+- The focus of Milestone 2 would be mainly about simualting the weather and environment modeling.
+- The focus of Milestone 3 would be mainly about rendering the weather and creating the special effects for the weather.
 
-Submit your Design doc as usual via pull request against this repository.
+|*Timeline*|*Tasks for Christine*|*Tasks for Hanting*|
+|:--:|:--:|:--:|
+|Week 1 (2024/11/06 to 2024/11/13)|Procedural terrain generation|Biome Map generation|
+||Temperature map generation|Cloud map generation|
+||Humidity map generation|Precipitation map generation|
+|Week 2 (2024/11/13 to 2024/11/20)|Vegetation and environment modeling|Weather transition|
+|Week 3 (2024/11/20 to 2024/11/27)|Environmental assets displacement|Water and terrain shader design|
+|Week 4 (2024/11/27 to 2024/12/02)| Design the cloud shader|Rain shader design|
+||Snow shader design if time allowed|Wet effect design if time allowed|
+
+
 ## Milestone 1: Implementation part 1 (due 11/13)
 Begin implementing your engine! Don't worry too much about polish or parameter tuning -- this week is about getting together the bulk of your generator implemented. By the end of the week, even if your visuals are crude, the majority of your generator's functionality should be done.
 
