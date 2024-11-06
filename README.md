@@ -13,7 +13,7 @@ The project stems from a fascination with procedural weather systems discovered 
 Our goal is to build a fully procedural and self-evolving weather system that can adapt to both user inputs and intrinsic rules, allowing users to interactively control and visualize weather on both macro and micro levels. This simulation will feature various adjustable parameters and zoom capabilities to provide users with a versatile tool for understanding and exploring weather dynamics.
 
 #### Goal
-- The final outcome of our project is to produce a fully procedural-generated and self-evolving weather system based on some user inputs, like height maps or other distribution maps. Also, the project should provide the users with some additional tunable parameters to change the generated environment and allow user to zoom in/out to view the simulated result on both micro and marco levels.
+The final outcome of our project is to produce a fully procedural-generated and self-evolving weather system based on some user inputs, like height maps or other distribution maps. Also, the project should provide the users with some additional tunable parameters to change the generated environment and allow user to zoom in/out to view the simulated result on both micro and marco levels.
 
 #### Inspiration/reference:
 
