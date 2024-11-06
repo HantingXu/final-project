@@ -10,7 +10,7 @@ Before submitting your first milestone, _you must get your project idea and scop
 #### Introduction
 The project stems from a fascination with procedural weather systems discovered during a past internship. Procedurally generated weather offers the exciting potential to create realistic, responsive environments that enhance immersion in virtual worlds, whether in games, simulations, or educational tools.
 
-Our goal is to build a fully procedural and self-evolving weather system that can adapt to both user inputs and intrinsic rules, allowing users to interactively control and visualize weather on both macro and micro levels. This simulation will feature various adjustable parameters and zoom capabilities to provide users with a versatile tool for understanding and exploring weather dynamics.
+With procedurally generated weather respond to factors like terrain height, temperature, and humidity, much like real-world weather systems. This adaptability creates an interactive experience, allowing users to observe or modify weather patterns in real-time. By building a system that can handle weather generation at both macro and micro levels, we aim to provide an experience that not only enhances the sense of realism but also invites users to engage with the environment through exploration and experimentation.
 
 #### Goal
 The final outcome of our project is to produce a fully procedural-generated and self-evolving weather system based on some user inputs, like height maps or other distribution maps. Also, the project should provide the users with some additional tunable parameters to change the generated environment and allow user to zoom in/out to view the simulated result on both micro and marco levels.
