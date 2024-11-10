@@ -16,6 +16,12 @@ MonoBehaviour:
   Scale: 5
   HeightMapTexture: {fileID: 8400000, guid: 464aee7eef4722a4287de3f08dfa912b, type: 2}
   HeightMapShader: {fileID: 7200000, guid: 01b47b0a047b156488df9987cdbdb6ea, type: 3}
-  WaterRatio: 0.056
+  WaterRatio: 0.003
   WaterMapTexture: {fileID: 8400000, guid: aba58acd999868d4fa043cc11ea49e13, type: 2}
   WaterMapShader: {fileID: 7200000, guid: d60200d0db515904380e6e27628111e3, type: 3}
+  LatitudeWeight: 0.5
+  HeightWeight: 0.17
+  TemperatureMapTexture: {fileID: 8400000, guid: 5f328c96bd0d8c841a2160f0eacfd45f,
+    type: 2}
+  TemperatureMapShader: {fileID: 7200000, guid: ffe1059d7cbea3c49af7a0f03ea44d82,
+    type: 3}

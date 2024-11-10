@@ -15,6 +15,8 @@ public class MapSetup : MonoBehaviour
         heightMapGenerator.GenerateMap();
         WaterMapGenerator waterMapGenerator = new WaterMapGenerator(this);
         waterMapGenerator.GenerateMap();
+        TemperatureMapGenerator temperatureMapGenerator = new TemperatureMapGenerator(this);
+        temperatureMapGenerator.GenerateMap();
     }
 
     // Update is called once per frame
