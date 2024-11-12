@@ -52,9 +52,9 @@ Our project was inspired by Nick's blog post, where they discussed how to proced
 
 |*Timeline*|*Tasks for Christine*|*Tasks for Hanting*|
 |:--:|:--:|:--:|
-|Week 1 (2024/11/06 to 2024/11/13)|Procedural terrain generation|Biome Map generation|
-||Temperature map generation|Cloud map generation|
-||Humidity map generation|Precipitation map generation|
+|Week 1 (2024/11/06 to 2024/11/13)|Procedural terrain generation|Water Map generation|
+||Height map generation|Cloud map generation|
+|||Temperature map generation|
 |Week 2 (2024/11/13 to 2024/11/20)|Vegetation and environment modeling|Weather transition|
 |Week 3 (2024/11/20 to 2024/11/27)|Environmental assets displacement|Water and terrain shader design|
 |Week 4 (2024/11/27 to 2024/12/02)| Design the cloud shader|Rain shader design|
