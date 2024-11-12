@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -8,9 +10,9 @@ public class HeightMapGenerator : IMapGenerator
 {
     private MapGeneratorStats parameter;
 
-    public HeightMapGenerator(MapSetup mapSettings)
+    public HeightMapGenerator(MapGeneratorStats mapSettings)
     {
-        parameter = mapSettings.parameter;
+        parameter = mapSettings;
     }
 
     public void GenerateMap()
@@ -20,11 +22,14 @@ public class HeightMapGenerator : IMapGenerator
             Debug.LogWarning("Please assign a RenderTexture to the HeightMapGenerator.");
             return;
         }
+        
         int width = parameter.HeightMapTexture.width;
         int height = parameter.HeightMapTexture.height;
 
-        parameter.HeightMapShader.SetFloat("scale", parameter.Scale);
-        parameter.HeightMapShader.SetFloat("heightMultiplier", parameter.HeightMultiplier);
+        ComputeBuffer noiseLayerBuffer = new ComputeBuffer(parameter.noiseLayers.Length, sizeof(float) * 11);
+        noiseLayerBuffer.SetData(parameter.noiseLayers);
+        parameter.HeightMapShader.SetBuffer(0, "noiseLayers", noiseLayerBuffer);
+        parameter.HeightMapShader.SetInt("numNoiseLayers", parameter.noiseLayers.Length);
         parameter.HeightMapShader.SetInt("width", width);
         parameter.HeightMapShader.SetInt("height", height);
         parameter.HeightMapShader.SetTexture(0, "Result", parameter.HeightMapTexture);

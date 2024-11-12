@@ -1,0 +1,109 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel GenerateHeightMapCS
+
+RWTexture2D<float4> Result;
+
+struct NoiseLayer
+{
+    float3 center;
+    float numLayers;
+    float baseRoughness;
+    float roughness;
+    float persistence;
+    float strength;
+    float minValue;
+    int useFirstLayerAsMask;
+    int enabled;
+};
+
+StructuredBuffer<NoiseLayer> noiseLayers;
+
+int numNoiseLayers;
+int width;
+int height;
+
+float hash(float n)
+{
+    return frac(sin(n) * 43758.5453);
+}
+     
+float noise(float3 x)
+{
+    // The noise function returns a value in the range -1.0f -> 1.0f
+    float3 p = floor(x);
+    float3 f = frac(x);
+     
+    f = f * f * (3.0 - 2.0 * f);
+    float n = p.x + p.y * 57.0 + 113.0 * p.z;
+     
+    float val = lerp(lerp(lerp(hash(n + 0.0), hash(n + 1.0), f.x),
+               lerp(hash(n + 57.0), hash(n + 58.0), f.x), f.y),
+               lerp(lerp(hash(n + 113.0), hash(n + 114.0), f.x),
+               lerp(hash(n + 170.0), hash(n + 171.0), f.x), f.y), f.z);
+    
+    return (val + 1.f) * 0.5f;
+}
+
+float evaluate(const NoiseLayer layer, float3 pos)
+{
+    float noiseValue = 0;
+    float frequency = layer.baseRoughness;
+    float amplitude = 1;
+    for (int i = 0; i < layer.numLayers; i++)
+    {
+        noiseValue += noise(pos * frequency + layer.center) * amplitude;
+        frequency *= layer.roughness;
+        amplitude *= layer.persistence;
+    }
+    noiseValue = max(0.f, noiseValue - layer.minValue);
+    return noiseValue * layer.strength;
+}
+
+float evaluateAll(float3 pos)
+{
+    if (numNoiseLayers == 0)
+    {
+        return 0.f;
+    }
+    else
+    {
+        float firstLayerValue = evaluate(noiseLayers[0], pos);
+        float elevation = firstLayerValue;
+        for (int i = 1; i < numNoiseLayers; i++)
+        {
+            const NoiseLayer curr = noiseLayers[i];
+            if (curr.enabled)
+            {
+                float mask = curr.useFirstLayerAsMask ? firstLayerValue : 1.f;
+                elevation += evaluate(noiseLayers[i], pos) * mask;
+            }
+        }
+        return elevation;
+    }
+}
+
+[numthreads(8, 8, 1)] // Adjust thread count based on your map size
+void GenerateHeightMapCS(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= width || id.y >= height)
+    {
+        return;
+    }
+    
+    float u = id.x / (float) width;
+    float v = id.y / (float) height;
+    
+    const float PI = 3.1415926;
+    
+    float theta = u * 2.f * PI;
+    float phi = (v - 0.5f) * PI;
+
+    float x = cos(phi) * cos(theta);
+    float y = sin(phi);
+    float z = cos(phi) * sin(theta);
+
+    float heightValue = evaluateAll(float3(x, y, z));
+        
+    Result[id.xy] = heightValue;
+
+}

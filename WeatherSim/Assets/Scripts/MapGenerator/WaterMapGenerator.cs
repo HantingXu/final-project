@@ -6,9 +6,9 @@ public class WaterMapGenerator : IMapGenerator
 {
     private MapGeneratorStats parameter;
 
-    public WaterMapGenerator(MapSetup mapSettings)
+    public WaterMapGenerator(MapGeneratorStats mapSettings)
     {
-        parameter = mapSettings.parameter;
+        parameter = mapSettings;
     }
 
     public void GenerateMap()
@@ -22,7 +22,7 @@ public class WaterMapGenerator : IMapGenerator
         int height = parameter.WaterMapTexture.height;
 
         parameter.WaterMapShader.SetTexture(0, "HeightMap", parameter.HeightMapTexture);
-        parameter.WaterMapShader.SetFloat("heightMultiplier", parameter.HeightMultiplier);
+        parameter.WaterMapShader.SetFloat("heightMultiplier", 1);
         parameter.WaterMapShader.SetFloat("waterRatio", parameter.WaterRatio);
         parameter.WaterMapShader.SetTexture(0, "Result", parameter.WaterMapTexture);
         // Dispatch the compute shader
