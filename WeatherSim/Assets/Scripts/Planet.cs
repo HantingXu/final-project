@@ -14,6 +14,20 @@ public class Planet : MonoBehaviour
     MeshFilter[] meshFilters;
     TerrainFace[] terrainFaces;
 
+    private float timer;
+    private CloudMapGenerator cloudMapGenerator;
+
+    private void Start()
+    {
+        timer = 0.0f;
+    }
+
+    private void Update()
+    {
+        timer += Time.deltaTime;
+        cloudMapGenerator.UpdateTime(timer);
+    }
+
     public void OnValidate()
     {
         Initialize();
@@ -21,6 +35,8 @@ public class Planet : MonoBehaviour
     }
     void Initialize()
     {
+        cloudMapGenerator = new CloudMapGenerator(mapSettings);
+
         GenerateMap();
 
         if (meshFilters == null || meshFilters.Length == 0)
@@ -52,6 +68,9 @@ public class Planet : MonoBehaviour
         heightMapGenerator.GenerateMap();
         WaterMapGenerator waterMapGenerator = new WaterMapGenerator(mapSettings);
         waterMapGenerator.GenerateMap();
+        TemperatureMapGenerator temperatureMapGenerator = new TemperatureMapGenerator(mapSettings);
+        temperatureMapGenerator.GenerateMap();
+        cloudMapGenerator.GenerateMap();
     }
 
     public void OnPlanetSettingsUpdated()

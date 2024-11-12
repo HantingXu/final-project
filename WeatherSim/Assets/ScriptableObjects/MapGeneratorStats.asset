@@ -27,3 +27,12 @@ MonoBehaviour:
   WaterRatio: 0.056
   WaterMapTexture: {fileID: 8400000, guid: aba58acd999868d4fa043cc11ea49e13, type: 2}
   WaterMapShader: {fileID: 7200000, guid: d60200d0db515904380e6e27628111e3, type: 3}
+  LatitudeWeight: 1
+  HeightWeight: 1
+  TemperatureMapTexture: {fileID: 8400000, guid: 5f328c96bd0d8c841a2160f0eacfd45f,
+    type: 2}
+  TemperatureMapShader: {fileID: 7200000, guid: 712049d016bdaa24c9886a6eb434a4bd,
+    type: 3}
+  CenterNumber: 18
+  CloudMapTexture: {fileID: 8400000, guid: 920f0b93f498e7841b562da86522f1a0, type: 2}
+  CloudMapShader: {fileID: 7200000, guid: a5ba9240e67db3f49a3c8949ca02a0d2, type: 3}

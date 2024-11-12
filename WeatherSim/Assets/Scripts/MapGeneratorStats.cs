@@ -29,4 +29,15 @@ public class MapGeneratorStats : ScriptableObject
     [Range(0f, 1f)] public float WaterRatio = 0.4f;
     public RenderTexture WaterMapTexture;
     public ComputeShader WaterMapShader;
+
+    [Header("Tempurature Map Parameters")]
+    [Range(0f, 10f)] public float LatitudeWeight = 1f;
+    [Range(0f, 10f)] public float HeightWeight = 1f;
+    public RenderTexture TemperatureMapTexture;
+    public ComputeShader TemperatureMapShader;
+
+    [Header("Cloud Map Parameters")]
+    [Range(0, 30)] public int CenterNumber = 18;
+    public RenderTexture CloudMapTexture;
+    public ComputeShader CloudMapShader;
 }

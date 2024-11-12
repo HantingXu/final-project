@@ -6,9 +6,9 @@ public class TemperatureMapGenerator : MonoBehaviour
 {
     private MapGeneratorStats parameter;
 
-    public TemperatureMapGenerator(MapSetup mapSettings)
+    public TemperatureMapGenerator(MapGeneratorStats mapSettings)
     {
-        parameter = mapSettings.parameter;
+        parameter = mapSettings;
     }
 
     public void GenerateMap()
@@ -22,7 +22,7 @@ public class TemperatureMapGenerator : MonoBehaviour
         int height = parameter.TemperatureMapTexture.height;
 
         parameter.TemperatureMapShader.SetTexture(0, "HeightMap", parameter.HeightMapTexture);
-        parameter.TemperatureMapShader.SetFloat("heightMultiplier", parameter.HeightMultiplier);
+        parameter.TemperatureMapShader.SetFloat("heightMultiplier", 1.0f);
         parameter.TemperatureMapShader.SetFloat("heightWeight", parameter.HeightWeight);
         parameter.TemperatureMapShader.SetFloat("latitudeWeight", parameter.LatitudeWeight);
         parameter.TemperatureMapShader.SetTexture(0, "Result", parameter.TemperatureMapTexture);

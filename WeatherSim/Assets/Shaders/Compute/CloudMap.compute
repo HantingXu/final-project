@@ -1,0 +1,255 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel GenerateCloudMapCS
+
+
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+int width;
+int height;
+float time;
+int centerNumber;
+StructuredBuffer<float> centers;
+
+RWTexture2D<float4> Result;
+
+float2 hash(float2 p)
+{
+    p = float2(dot(p, float2(127.1, 311.7)), dot(p, float2(269.5, 183.3)));
+    return -1.0 + 2.0 * frac(sin(p) * 43758.5453123);
+}
+
+float noise(in float2 p)
+{
+    const float K1 = 0.366025404; // (sqrt(3)-1)/2;
+    const float K2 = 0.211324865; // (3-sqrt(3))/6;
+    float2 i = floor(p + (p.x + p.y) * K1);
+    float2 a = p - i + (i.x + i.y) * K2;
+    float2 o = (a.x > a.y) ? float2(1.0, 0.0) : float2(0.0, 1.0); //vec2 of = 0.5 + 0.5*vec2(sign(a.x-a.y), sign(a.y-a.x));
+    float2 b = a - o + K2;
+    float2 c = a - 1.0 + 2.0 * K2;
+    float3 h = max(0.5 - float3(dot(a, a), dot(b, b), dot(c, c)), 0.0);
+    float3 n = h * h * h * h * float3(dot(a, hash(i + 0.0)), dot(b, hash(i + o)), dot(c, hash(i + 1.0)));
+    return dot(n, float3(70.0, 70.0, 70.0));
+}
+
+float fbm(float2 n)
+{
+    float total = 0.0, amplitude = 0.1;
+    const float2x2 m = float2x2(1.6, 1.2, -1.2, 1.6);
+    for (int i = 0; i < 7; i++)
+    {
+        total += noise(n) * amplitude;
+        n = mul(m, n);
+        amplitude *= 0.4;
+    }
+    return total;
+}
+
+float makeCloud(float2 uv)
+{
+    const float cloudscale = 1.;
+    const float clouddark = 0.8;
+    const float cloudlight = 0.3;
+    const float cloudcover = 0.2;
+    const float cloudalpha = 2.0;
+
+    const float2x2 m = float2x2(1.6, 1.2, -1.2, 1.6);
+    
+    float2 tuv = uv;
+    float scaledTime = 0.03f * time;
+    float q = fbm(tuv * cloudscale * 0.5);
+    
+    //ridged noise shape
+    float r = 0.0;
+    tuv *= cloudscale;
+    tuv -= q - scaledTime;
+    float weight = 0.8;
+    for (int i = 0; i < 8; i++)
+    {
+        r += abs(weight * noise(tuv));
+        tuv = mul(m, tuv) + scaledTime;
+        weight *= 0.7;
+    }
+    
+    //noise shape
+    float f = 0.0;
+    tuv = uv;
+    tuv *= cloudscale;
+    tuv -= q - scaledTime;
+    weight = 0.7;
+    for (int j = 0; j < 8; j++)
+    {
+        f += weight * noise(tuv);
+        tuv = mul(m, tuv) + scaledTime;
+        weight *= 0.6;
+    }
+    
+    f *= r + f;
+    f = cloudcover + cloudalpha * f * r;
+    return f;
+}
+
+float3 hash33(float3 p3)
+{
+    float3 p = frac(p3 * float3(.1031f, .11369f, .13787f));
+    p += dot(p, p.yxz + 19.19);
+    return -1.0 + 2.0 * frac(float3((p.x + p.y) * p.z, (p.x + p.z) * p.y, (p.y + p.z) * p.x));
+}
+
+float Worley3D(float3 p, float scale)
+{
+
+    float3 id = floor(p * scale);
+    float3 fd = frac(p * scale);
+
+    float n = 0.;
+
+    float minimalDist = 1.;
+
+
+    for (float x = -1.; x <= 1.; x++)
+    {
+        for (float y = -1.; y <= 1.; y++)
+        {
+            for (float z = -1.; z <= 1.; z++)
+            {
+
+                float3 coord = float3(x, y, z);
+                float3 tmpCoord = id + coord;
+                float3 rId = hash33(float3(modf(tmpCoord.x, scale), modf(tmpCoord.y, scale), modf(tmpCoord.z, scale))) * 0.5 + 0.5;
+
+                float3 r = coord + rId - fd;
+
+                float d = dot(r, r);
+
+                if (d < minimalDist)
+                {
+                    minimalDist = d;
+                }
+
+            } //z
+        } //y
+    } //x
+    
+    return 1.0 - minimalDist;
+}
+
+float2 VortField(float2 q, float2 c)
+{
+    float2 d = q - c;
+    return 0.3 * float2(d.y, -d.x) / (dot(d, d) + 0.05);
+}
+
+
+
+float2 FlowField(float2 q)
+{
+    
+    float dir = 1.0;
+    float2 vr = float2(0.,0.);
+    
+    for (int i = 0; i < centerNumber; i++)
+    {
+        float2 center = float2(centers[i * 2], centers[i * 2 + 1]); //* float2(width / height, 1.0);
+        vr += dir * VortField(q * 3.0, center * 3.0);
+        dir = -dir;
+    }
+    /*
+    for (int k = 0; k < 12; k++)
+    {
+        for (int j = 0; j < 6; j++)
+        {
+            float2 c = float2(-6. + float(k) * 1.5, -2.5 + float(j) * 1.5);
+            vr += dir * VortField(6. * q, c);
+            dir = -dir;
+        }
+    
+    }*/
+    return vr;
+}
+/*
+[numthreads(8,8,1)]
+void GenerateCloudMapCS (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= width || id.y >= height)
+    {
+        return;
+    }
+    // Convert (x, y) to latitude and longitude
+    
+    float u = id.x / (float) width;
+    float v = id.y / (float) height;
+    const float PI = 3.1415926;
+    
+    float theta = u * 2.f * PI;
+    float phi = (v - 0.5f) * PI;
+
+    float x = cos(phi) * cos(theta);
+    float y = sin(phi);
+    float z = cos(phi) * sin(theta);
+
+    //float2 uv = float2(y, x) * 6.0;
+    //float2 uv = float2((atan2(x, z)) / (2.0 * PI) + 0.5, y );
+    float2 uv = float2(id.x / (float) width, id.y / (float) height);
+    uv.x *= (float) width / (float) height;
+    float2 p = uv;
+    for (int i = 0; i < 10; i++) 
+        p -= FlowField(p) * 0.03;
+    float iTime = time;
+    Result[id.xy] = pow(clamp(makeCloud(p), 0.0, 1.0), 2.0); //pow(Worley3D(float3(5. * p + float2(-0.2 * iTime, 0.), iTime * 0.1), 8.0), 2.0f);
+    //Result[id.xy] = pow(makeCloud(uv),2.0);
+
+}*/
+
+float sample(float2 uv)
+{
+    uv.x *= (float) width / (float) height;
+    uv.x = 3.0 - abs(uv.x - 3.0);
+    float2 p = uv;
+    for (int i = 0; i < 10; i++) 
+        p -= FlowField(p) * 0.03;
+    float iTime = time;
+    return pow(clamp(makeCloud(p), 0.0, 1.0), 2.0);
+}
+
+[numthreads(8, 8, 1)]
+void GenerateCloudMapCS(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= width || id.y >= height)
+    {
+        return;
+    }
+    // Convert (x, y) to latitude and longitude
+    
+    float u = id.x / (float) width;
+    float v = id.y / (float) height;
+    const float PI = 3.1415926;
+    
+    float theta = u * 2.f * PI;
+    float phi = (v - 0.5f) * PI;
+
+    float x = cos(phi) * cos(theta);
+    float y = sin(phi);
+    float z = cos(phi) * sin(theta);
+    
+    //float2 cylCoord = float2(atan2(z, -x) / PI, y * 0.5 + 0.5);
+
+    //float2 uv = float2(x, z);
+    float2 uv = float2(id.x / (float) width, id.y / (float) height) * 3.0f;
+    float s1 = sample(uv);
+    uv = float2(x, z);
+    float s2 = sample(uv);
+    Result[id.xy] = lerp(s1, s2, abs(y));
+    //float2 uv = float2(id.x / (float) width, id.y / (float) height) * 3.0f;
+    /*
+    uv.x *= (float) width / (float) height;
+    uv.x = 3.0 - abs(uv.x - 3.0);
+    float2 p = uv;
+    for (int i = 0; i < 10; i++) 
+        p -= FlowField(p) * 0.03;
+    float iTime = time;*/
+    //Result[id.xy] = pow(clamp(makeCloud(p), 0.0, 1.0), 2.0); //pow(Worley3D(float3(5. * p + float2(-0.2 * iTime, 0.), iTime * 0.1), 8.0), 2.0f);
+    //Result[id.xy] = pow(makeCloud(uv),2.0);
+
+}
