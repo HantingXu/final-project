@@ -19,7 +19,7 @@ MonoBehaviour:
     roughness: 1.76
     persistence: 0.5
     strength: 2.4
-    minValue: 1.46
+    minValue: 1.36
     useFirstLayerAsMask: 0
     enabled: 0
   HeightMapTexture: {fileID: 8400000, guid: 464aee7eef4722a4287de3f08dfa912b, type: 2}
@@ -33,6 +33,6 @@ MonoBehaviour:
     type: 2}
   TemperatureMapShader: {fileID: 7200000, guid: 712049d016bdaa24c9886a6eb434a4bd,
     type: 3}
-  CenterNumber: 18
+  CenterNumber: 15
   CloudMapTexture: {fileID: 8400000, guid: 920f0b93f498e7841b562da86522f1a0, type: 2}
   CloudMapShader: {fileID: 7200000, guid: a5ba9240e67db3f49a3c8949ca02a0d2, type: 3}
