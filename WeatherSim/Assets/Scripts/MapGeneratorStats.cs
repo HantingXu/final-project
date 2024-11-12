@@ -31,8 +31,8 @@ public class MapGeneratorStats : ScriptableObject
     public ComputeShader WaterMapShader;
 
     [Header("Tempurature Map Parameters")]
-    [Range(0f, 10f)] public float LatitudeWeight = 1f;
-    [Range(0f, 10f)] public float HeightWeight = 1f;
+    [Range(0f, 1f)] public float LatitudeWeight = 0.5f;
+    [Range(0f, 1f)] public float HeightWeight = 0.5f;
     public RenderTexture TemperatureMapTexture;
     public ComputeShader TemperatureMapShader;
 
