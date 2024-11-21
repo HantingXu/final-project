@@ -155,52 +155,8 @@ float2 FlowField(float2 q)
         vr += dir * VortField(q * 3.0, center * 3.0);
         dir = -dir;
     }
-    /*
-    for (int k = 0; k < 12; k++)
-    {
-        for (int j = 0; j < 6; j++)
-        {
-            float2 c = float2(-6. + float(k) * 1.5, -2.5 + float(j) * 1.5);
-            vr += dir * VortField(6. * q, c);
-            dir = -dir;
-        }
-    
-    }*/
     return vr;
 }
-/*
-[numthreads(8,8,1)]
-void GenerateCloudMapCS (uint3 id : SV_DispatchThreadID)
-{
-    if (id.x >= width || id.y >= height)
-    {
-        return;
-    }
-    // Convert (x, y) to latitude and longitude
-    
-    float u = id.x / (float) width;
-    float v = id.y / (float) height;
-    const float PI = 3.1415926;
-    
-    float theta = u * 2.f * PI;
-    float phi = (v - 0.5f) * PI;
-
-    float x = cos(phi) * cos(theta);
-    float y = sin(phi);
-    float z = cos(phi) * sin(theta);
-
-    //float2 uv = float2(y, x) * 6.0;
-    //float2 uv = float2((atan2(x, z)) / (2.0 * PI) + 0.5, y );
-    float2 uv = float2(id.x / (float) width, id.y / (float) height);
-    uv.x *= (float) width / (float) height;
-    float2 p = uv;
-    for (int i = 0; i < 10; i++) 
-        p -= FlowField(p) * 0.03;
-    float iTime = time;
-    Result[id.xy] = pow(clamp(makeCloud(p), 0.0, 1.0), 2.0); //pow(Worley3D(float3(5. * p + float2(-0.2 * iTime, 0.), iTime * 0.1), 8.0), 2.0f);
-    //Result[id.xy] = pow(makeCloud(uv),2.0);
-
-}*/
 
 float sample(float2 uv)
 {

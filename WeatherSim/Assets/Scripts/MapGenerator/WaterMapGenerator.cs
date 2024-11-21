@@ -21,6 +21,8 @@ public class WaterMapGenerator : IMapGenerator
         int width = parameter.WaterMapTexture.width;
         int height = parameter.WaterMapTexture.height;
 
+        parameter.WaterMapShader.SetInt("width", width);
+        parameter.WaterMapShader.SetInt("height", height);
         parameter.WaterMapShader.SetTexture(0, "HeightMap", parameter.HeightMapTexture);
         parameter.WaterMapShader.SetFloat("heightMultiplier", 1);
         parameter.WaterMapShader.SetFloat("waterRatio", parameter.WaterRatio);

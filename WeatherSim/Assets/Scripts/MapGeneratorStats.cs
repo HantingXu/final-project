@@ -40,4 +40,11 @@ public class MapGeneratorStats : ScriptableObject
     [Range(0, 30)] public int CenterNumber = 18;
     public RenderTexture CloudMapTexture;
     public ComputeShader CloudMapShader;
+
+    [Header("Biome Map Parameters")]
+    public Color ShoreColor;
+    public Color WaterColor;
+    public RenderTexture BlueNoiseTexture;
+    public RenderTexture BiomeMapTexture;
+    public ComputeShader BiomeMapShader;
 }

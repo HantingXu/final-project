@@ -1,0 +1,118 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel GenerateBlueNoiseCS
+#pragma kernel GenerateBiomeMapCS
+
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+RWTexture2D<float4> BlueNoise;
+
+RWTexture2D<float4> WaterMap;
+RWTexture2D<float4> TemperatureMap;
+RWTexture2D<float4> HeightMap;
+
+unsigned int width;
+unsigned int height;
+
+float4 waterColor;
+
+//struct
+
+float random(float3 pos)
+{
+    return frac(sin(dot(pos, float3(64.25375463, 23.27536534, 86.29678483))) * 59482.7542);
+}
+
+[numthreads(8,8,1)]
+void GenerateBlueNoiseCS(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= width || id.y >= height)
+    {
+        return;
+    }
+
+    float u = id.x / (float) width;
+    float v = id.y / (float) height;
+    const float PI = 3.1415926;
+    
+    float theta = u * 2.f * PI;
+    float phi = (v - 0.5f) * PI;
+
+    float x = cos(phi) * cos(theta);
+    float y = sin(phi);
+    float z = cos(phi) * sin(theta);
+    float r = random(float3(int(x * 500.0f), int(y * 500.0f), int(z * 500.0f)));
+    BlueNoise[id.xy] = r;
+
+}
+
+float GetNeighborOnSphere(int radius, float2 currentUV)
+{
+    const float PI = 3.1415926;
+    const float TWOPI = PI * 2.0f;
+    const float INTERVAL = 0.0031415926;
+    float theta = currentUV.x * 2.f * PI + 2.0 * PI;
+    float phi = (currentUV.y - 0.5f) * PI + 2.0 * PI;
+    
+    float curCol = BlueNoise[currentUV * float2(width, height)].r;
+    float maxCol = 0.0f;
+    for (int i = -radius; i < radius + 1; i++)
+    {
+        for (int j = -radius; j < radius + 1; j++)
+        {
+            float sTheta = i * INTERVAL + theta;
+            float sPhi = j * INTERVAL + phi;
+            float2 sUV = float2(frac(sTheta / (2.0f * PI)), frac(sPhi / PI + 0.5f));
+            maxCol = max(BlueNoise[sUV * float2(width, height)].r, maxCol);
+        }
+    }
+    if (maxCol == curCol)
+    {
+        return maxCol;
+    }
+    return 0.0f;
+}
+
+[numthreads(8,8,1)]
+void GenerateBiomeMapCS(uint3 id : SV_DispatchThreadID)
+{
+    
+    // TODO: insert actual code here!
+    if (id.x >= width || id.y >= height)
+    {
+        return;
+    }
+    // Convert (x, y) to latitude and longitude
+    
+    float u = id.x / (float) width;
+    float v = id.y / (float) height;
+    /*
+    const float PI = 3.1415926;
+    
+    float theta = u * 2.f * PI;
+    float phi = (v - 0.5f) * PI;
+
+    float x = cos(phi) * cos(theta);
+    float y = sin(phi);
+    float z = cos(phi) * sin(theta);
+    
+    float2 uv = float2(abs(x), abs(z));*/
+    float moist = WaterMap[id.xy].r;
+    float temperature = TemperatureMap[id.xy].r;
+    float height = HeightMap[id.xy].r;
+    //if (temperature < 0.4f)
+    //    Result[id.xy] = float4(1.0f, 1.0f, 1.0f, 1.0f);
+    //else
+    //    Result[id.xy] = float4(0.0f, 0.0f, 0.0f, 1.0f);
+    float isWater = step(height, 0.0f);
+    float4 landColor = float4(1.0f, 1.0f, 0.0f, 1.0f);
+
+    int radius = int((1.0f - min(1.0f - moist, temperature)) * 18.0f);
+    if (height > 0.0f)
+        Result[id.xy] = GetNeighborOnSphere(radius, float2(u, v));
+    else
+        Result[id.xy] = 0.0f;
+    //BlueNoiseTexture[float2(uv.x * 200.0f, uv.y * 100.0f)]; //isWater * waterColor + (1.0f - isWater) * landColor;
+
+}

@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c956c99808ff2ef47a97f9413002a161, type: 3}
   m_Name: PlanetSettings
   m_EditorClassIdentifier: 
-  planetRadius: 9.83
-  planetMaterial: {fileID: 2100000, guid: 16736fcdb3dae564e84a5518303f7b56, type: 2}
+  planetRadius: 10
+  planetMaterial: {fileID: -876546973899608171, guid: 4a24b0dd5ad4f0c4f96d9346bed4dd52,
+    type: 3}

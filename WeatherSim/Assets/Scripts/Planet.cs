@@ -16,6 +16,7 @@ public class Planet : MonoBehaviour
 
     private float timer;
     private CloudMapGenerator cloudMapGenerator;
+    private BiomeMapGenerator biomeMapGenerator;
 
     private void Start()
     {
@@ -36,7 +37,9 @@ public class Planet : MonoBehaviour
     void Initialize()
     {
         cloudMapGenerator = new CloudMapGenerator(mapSettings);
+        biomeMapGenerator = new BiomeMapGenerator(mapSettings);
 
+        GenerateTexture();
         GenerateMap();
 
         if (meshFilters == null || meshFilters.Length == 0)
@@ -62,6 +65,10 @@ public class Planet : MonoBehaviour
         }
     }
 
+    void GenerateTexture()
+    {
+        biomeMapGenerator.GenerateBlueNosie();
+    }
     void GenerateMap()
     {
         HeightMapGenerator heightMapGenerator = new HeightMapGenerator(mapSettings);
@@ -70,6 +77,8 @@ public class Planet : MonoBehaviour
         waterMapGenerator.GenerateMap();
         TemperatureMapGenerator temperatureMapGenerator = new TemperatureMapGenerator(mapSettings);
         temperatureMapGenerator.GenerateMap();
+        BiomeMapGenerator biomeMapGenerator = new BiomeMapGenerator(mapSettings);
+        biomeMapGenerator.GenerateMap();
         cloudMapGenerator.GenerateMap();
     }
 
