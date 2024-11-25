@@ -136,7 +136,7 @@ Biome map is generated based on two maps temperature map and humidity map. User 
 - **Microscopic Cloud Generation**
 Our volumetric clouds are generated through sampling the density of a provided 3D noise texture by raymarching, so that in the final version, the player can move around or in the cloud. To do that, this [video](https://www.youtube.com/watch?v=4QOcCGI6xOU) provide great help to me. Currently, the clouds are only rendered in a fixed box and didn't sample the cloud map distribution. I'll continue to work on that in the final version.
 
-|![demo](images/cloud.png)|
+|![](Images/cloud.png)|
 |:--:|
 |*Cloud*|
 
