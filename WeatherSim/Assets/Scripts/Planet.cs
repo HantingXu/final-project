@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class Planet : MonoBehaviour
 {
@@ -15,18 +16,33 @@ public class Planet : MonoBehaviour
     TerrainFace[] terrainFaces;
 
     private float timer;
+    private int shouldUpdate;
     private CloudMapGenerator cloudMapGenerator;
     private BiomeMapGenerator biomeMapGenerator;
+    private WeatherMapGenerator weatherMapGenerator;
+
+    public RenderTexture renderTexture;
 
     private void Start()
     {
         timer = 0.0f;
+        shouldUpdate = 0;
+
+        //renderTexture = mapSettings.WeatherMapTexture;
+        //ExportRenderTexture("Assets/ExportedImage.png");
     }
 
     private void Update()
     {
-        timer += Time.deltaTime;
-        cloudMapGenerator.UpdateTime(timer);
+        if (shouldUpdate == mapSettings.weatherUpdateRate) {
+            timer += Time.deltaTime;
+            cloudMapGenerator.UpdateTime(timer);
+            weatherMapGenerator.GenerateMap();
+            shouldUpdate = 0;
+        } else
+        {
+            shouldUpdate += 1;
+        }
     }
 
     public void OnValidate()
@@ -38,6 +54,7 @@ public class Planet : MonoBehaviour
     {
         cloudMapGenerator = new CloudMapGenerator(mapSettings);
         biomeMapGenerator = new BiomeMapGenerator(mapSettings);
+        weatherMapGenerator = new WeatherMapGenerator(mapSettings);
 
         GenerateTexture();
         GenerateMap();
@@ -80,6 +97,7 @@ public class Planet : MonoBehaviour
         BiomeMapGenerator biomeMapGenerator = new BiomeMapGenerator(mapSettings);
         biomeMapGenerator.GenerateMap();
         cloudMapGenerator.GenerateMap();
+        weatherMapGenerator.GenerateMap();
     }
 
     public void OnPlanetSettingsUpdated()
@@ -91,6 +109,32 @@ public class Planet : MonoBehaviour
     public void OnMapSettingsUpdated()
     {
         GenerateMap();
+    }
+
+    public void ExportRenderTexture(string filePath)
+    {
+        // Set the active RenderTexture
+        RenderTexture activeRenderTexture = RenderTexture.active;
+        RenderTexture.active = renderTexture;
+
+        // Create a new Texture2D with the same dimensions as the RenderTexture
+        Texture2D texture2D = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RG32, false);
+
+        // Read the RenderTexture into the Texture2D
+        texture2D.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+        texture2D.Apply();
+
+        // Reset the active RenderTexture
+        RenderTexture.active = activeRenderTexture;
+
+        // Encode the Texture2D to PNG format
+        byte[] bytes = texture2D.EncodeToPNG();
+
+        // Save the encoded image to disk
+        File.WriteAllBytes(filePath, bytes);
+
+        // Clean up
+        Destroy(texture2D);
     }
 
     void GenerateMesh()

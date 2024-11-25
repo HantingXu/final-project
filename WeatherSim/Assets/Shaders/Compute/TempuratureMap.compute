@@ -24,8 +24,13 @@ void GenerateTemperatureMapCS(uint3 id : SV_DispatchThreadID)
     float latitude = id.y / (float) height;
     
     latitude = abs(0.5f - latitude) * 2.0f;
-    latitude = latitude * latitude;
+    latitude = 1.0f - abs(latitude);
+    latitude = pow(latitude, 1.5f);
 
-    float normalizedHeight = HeightMap[id.xy].r * 3.0f;
-    Result[id.xy] = (1.0f - clamp(normalizedHeight * heightWeight + latitude * latitudeWeight * 40.0f, 0.01f, 0.99f));
+    float normalizedHeight = clamp(HeightMap[id.xy].r, 0.f, 1.f);
+    float altitudeEffect = 1.0f - normalizedHeight;
+    
+    float temperature = latitude * latitudeWeight
+                      + altitudeEffect * heightWeight;
+    Result[id.xy] = temperature;
 }

@@ -1,0 +1,103 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel GenerateTemperatureMapCS
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+
+RWTexture2D<float4> Result;
+
+RWTexture2D<float4> HeightMap;
+RWTexture2D<float4> CloudMap;
+RWTexture2D<float4> WaterMap;
+RWTexture2D<float4> TemperatureMap;
+
+int width;
+int height;
+
+float highThreshold;
+float nearThreshold;
+float coldThreshold;
+float veryHighThreshold;
+float mediumThreshold;
+float lowThreshold;
+float hotThreshold;
+
+float SampleSafe(RWTexture2D<float4> map, int2 coord)
+{
+    if (coord.x < 0 || coord.x >= width || coord.y < 0 || coord.y >= height)
+    {
+        return 0.0; // Return 0 for out-of-bounds
+    }
+    return map[coord].r; // Return the red channel value
+}
+
+[numthreads(8,8,1)]
+void GenerateTemperatureMapCS(uint3 id : SV_DispatchThreadID)
+{ 
+    if (id.x >= width || id.y >= height)
+    {
+        return;
+    }
+
+    float height = HeightMap[id.xy].r;
+    float cloudDensity = CloudMap[id.xy].r;
+    float temperature = TemperatureMap[id.xy].r;
+    
+    int kernelRadius = 3;
+    float totalWater = 0.0;
+    float sampleCount = 0.0;
+
+    // Sample within a square around the current pixel
+    for (int offsetX = -kernelRadius; offsetX <= kernelRadius; offsetX++)
+    {
+        for (int offsetY = -kernelRadius; offsetY <= kernelRadius; offsetY++)
+        {
+            int2 samplePos = id.xy + int2(offsetX, offsetY);
+            float sampledWater = SampleSafe(WaterMap, samplePos);
+
+            totalWater += sampledWater;
+            sampleCount += 1.0;
+        }
+    }
+    float waterProximity = totalWater / sampleCount;
+    
+    float weatherType = 0.0; // 0: Default, 1: Rainy, 2: Snowy, 3: Cloudy, 4: Sunny, 5: Partly Cloudy
+    float intensity = 0.0;
+
+    if (cloudDensity > highThreshold && waterProximity > nearThreshold)
+    {
+        if (temperature < coldThreshold)
+        {
+            weatherType = 2.0; // Snowy
+            intensity = lerp(0.1, 0.9, (cloudDensity - mediumThreshold) / (highThreshold - mediumThreshold));
+        }
+        else
+        {
+            weatherType = 1.0; // Rainy
+            if (cloudDensity > veryHighThreshold)
+                intensity = 1.0; // Heavy Rain
+            else if (cloudDensity > mediumThreshold)
+                intensity = lerp(0.5, 0.8, (cloudDensity - mediumThreshold) / (highThreshold - mediumThreshold));
+            else
+                intensity = lerp(0.2, 0.5, (cloudDensity - lowThreshold) / (mediumThreshold - lowThreshold));
+        }
+    }
+    else if (cloudDensity > mediumThreshold)
+    {
+        weatherType = 3.0;
+        intensity = lerp(0.1, 0.9, (cloudDensity - mediumThreshold) / (highThreshold - mediumThreshold));
+    }
+    else if (temperature > hotThreshold && cloudDensity < lowThreshold)
+    {
+        weatherType = 4.0; // Sunny
+        intensity = lerp(0.1, 0.9, (temperature - hotThreshold) / (1.0 - hotThreshold));
+    }
+    else
+    {
+        weatherType = 5.0; // Partly Cloudy
+        intensity = lerp(0.1, 0.9, (cloudDensity - lowThreshold) / (mediumThreshold - lowThreshold));
+    }
+
+    Result[id.xy] = float4(weatherType, intensity, 0.0, 0.0);
+
+}

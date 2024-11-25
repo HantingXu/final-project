@@ -20,6 +20,8 @@ public struct NoiseLayer
 [CreateAssetMenu(menuName = "GAME STATS/Map Generator Stats")]
 public class MapGeneratorStats : ScriptableObject
 {
+    public int weatherUpdateRate = 1000;
+
     [Header("Height Map Parameters")]
     public NoiseLayer[] noiseLayers;
     public RenderTexture HeightMapTexture;
@@ -47,4 +49,15 @@ public class MapGeneratorStats : ScriptableObject
     public RenderTexture BlueNoiseTexture;
     public RenderTexture BiomeMapTexture;
     public ComputeShader BiomeMapShader;
+
+    [Header("Weather Map Parameters")]       
+    public float nearThreshold = 0.5f;            
+    public float veryHighThreshold = 0.95f;
+    public float highThreshold = 0.8f;
+    public float mediumThreshold = 0.5f;     
+    public float lowThreshold = 0.2f;        
+    public float hotThreshold = 0.8f;
+    public float coldThreshold = 0.2f;
+    public RenderTexture WeatherMapTexture;
+    public ComputeShader WeatherMapShader;
 }
