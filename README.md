@@ -130,15 +130,58 @@ Tempurature map is generated based the latitude and height of the globe. In this
 ### Completed Tasks
 
 #### Biome Map Generation & Microscopic Cloud Generation (Hanting)
+
 - **Biome Map Generation**
 Biome map is generated based on two maps temperature map and humidity map. User can provide a texture map that assigns different colors that represents different biomes. The provided texture should take temperature in y-axis and humidity in x-axis, like the picture shown below.
 
+|![biomeLookup](https://github.com/user-attachments/assets/12f9d36d-89f4-4083-8a85-4a088ad3bae4)|![biomePlanet](https://github.com/user-attachments/assets/f44623f8-050d-4ad7-9570-1fabf72836ef)|
+|:--:|:--:|
+|*Biome Map*|*Planet textured by Biome Map*|
+
 - **Microscopic Cloud Generation**
+  
 Our volumetric clouds are generated through sampling the density of a provided 3D noise texture by raymarching, so that in the final version, the player can move around or in the cloud. To do that, this [video](https://www.youtube.com/watch?v=4QOcCGI6xOU) provide great help to me. Currently, the clouds are only rendered in a fixed box and didn't sample the cloud map distribution. I'll continue to work on that in the final version.
 
 |![](Images/cloud.png)|
 |:--:|
 |*Cloud*|
+
+#### Procedural Weather & Weather Visualization (Christine)
+
+- **Procedural Weather**
+  
+I leverage our maps including temperature, water, and cloud maps to procedurally generate realistic and dynamic weather conditions. 
+Each map is associated with an environmental factor that influence the weather:
+
+|**Map**|**Environmental Factor**|
+|:--:|:--:|
+|Temperature Map|Temperature|
+|Water Map|Water Proximity|
+|Cloud Map|Cloud Density|
+
+By integrating environmental factors, I simulate the following weather phenomena based on user-defined thresholds:
+
+|**Weather Type**|**Relevant Environmental Factor**|
+|:--:|:--:|
+|Sunny|*temperature > hotThreshold && cloudDensity < lowThreshold*|
+|Rainy|*temperature > coldThreshold && cloudDensity > highThreshold && waterProximity > nearThreshold*|
+|Cloudy|*cloudDensity > mediumThreshold*|
+|Snowy|*temperature < coldThreshold && cloudDensity > highThreshold && waterProximity > nearThreshold*|
+|Partly Cloudy|*Other*|
+
+Additionally, each weather type is assigned an intensity based on the current environmental factors and some smoothing factor.
+
+|![](https://github.com/user-attachments/assets/d0c961c8-71f1-4a12-bf92-02bfd23db284)|![](https://github.com/user-attachments/assets/30db2f56-d7ae-4291-837e-f205bbf03143)|
+|:--:|:--:|
+|*Weather Map (R Channel: Weather Type, G Channel: Intensity)*|*User Control*|
+
+- **Weather Visualization**
+
+I also created a shader to showcase our dyanmic weather system, where each color represents a unique weather type.
+
+|![weather](https://github.com/user-attachments/assets/25116134-6a83-4b9f-8ce2-0cdbe0fc371f)|![](https://github.com/user-attachments/assets/31961ead-4151-4f6e-a318-e9b1b057c528)|
+|:--:|:--:|
+|*Weather Map Visualization*|*User Control*|
 
 #### References
 - [*Sebastian Lague's Coding Adventure: Clouds*](https://www.youtube.com/watch?v=4QOcCGI6xOU)
