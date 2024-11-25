@@ -1,5 +1,5 @@
 ## Procedural Weather System
-### Christine Kneer & Hanting Xu
+### Created by: Christine Kneer & Hanting Xu
 
 ### Design Doc
 
