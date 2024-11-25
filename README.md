@@ -1,3 +1,6 @@
+## Procedural Weather System
+### Christine Kneer & Hanting Xu
+
 ### Design Doc
 
 #### Introduction
