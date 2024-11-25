@@ -7,7 +7,7 @@
 - [Milestone 2](https://github.com/HantingXu/final-project?tab=readme-ov-file#milestone-2)
 - Final
 
-### Design Doc
+## Design Doc
 
 #### Introduction
 The project stems from a fascination with procedural weather systems discovered during a past internship. Procedurally generated weather responds to factors like terrain height, temperature, and humidity, which offers the exciting potential to create realistic, responsive environments that enhance immersion in virtual worlds, whether in games, simulations, or educational tools. By building a system that can handle weather generation at both macro and micro levels, we aim to provide an experience that not only enhances the sense of realism but also invites users to engage with the environment through exploration and experimentation.
