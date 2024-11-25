@@ -1,10 +1,3 @@
-# Final Project!
-
-This is it! The culmination of your procedural graphics experience this semester. For your final project, we'd like to give you the time and space to explore a topic of your choosing. You may choose any topic you please, so long as you vet the topic and scope with an instructor or TA. We've provided some suggestions below. The scope of your project should be roughly 1.5 homework assignments. To help structure your time, we're breaking down the project into 4 milestones:
-
-## Project planning: Design Doc (due 11/6)
-Before submitting your first milestone, _you must get your project idea and scope approved by Rachel, Adam or a TA._
-
 ### Design Doc
 
 #### Introduction
@@ -61,7 +54,7 @@ Our project was inspired by Nick's blog post, where they discussed how to proced
 ||Snow shader design if time allowed|Wet effect design if time allowed|
 
 
-## Milestone 1: Implementation part 1 (due 11/13)
+## Milestone 1
 
 In Milestone 1, we laid the groundwork for our weather simulation project by generating both terrain and weather maps. These foundational maps allowed us to create a basic macroscopic view of our planet, incorporating a high level of user control for customization. 
 
@@ -125,7 +118,7 @@ Tempurature map is generated based the latitude and height of the globe. In this
 - [*Sebastian Lague's Procedural Planet Series*](https://www.youtube.com/watch?v=QN39W020LqU&list=PLFt_AvWsXl0cONs3T0By4puYy6GM22ko8)
 - [*Curl Noise*](https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph2007-curlnoise.pdf)
 
-## Milestone 2: Implementation part 2 (due 11/25)
+## Milestone 2
 
 ### Completed Tasks
 
