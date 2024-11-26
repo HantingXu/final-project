@@ -40,6 +40,9 @@ public class MapGeneratorStats : ScriptableObject
 
     [Header("Cloud Map Parameters")]
     [Range(0, 30)] public int CenterNumber = 18;
+    [Range(0.0f, 1.0f)] public float CloudCoverage = 0.2f;
+    [Range(0.0f, 3.0f)] public float CloudIntensity = 1.9f;
+    [Range(0.0f, 7.0f)] public float CloudShape = 4.5f;
     public RenderTexture CloudMapTexture;
     public ComputeShader CloudMapShader;
 

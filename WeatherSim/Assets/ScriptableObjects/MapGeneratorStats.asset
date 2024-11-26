@@ -44,6 +44,9 @@ MonoBehaviour:
   TemperatureMapShader: {fileID: 7200000, guid: 712049d016bdaa24c9886a6eb434a4bd,
     type: 3}
   CenterNumber: 20
+  CloudCoverage: 0.2
+  CloudIntensity: 1.8
+  CloudShape: 4.91
   CloudMapTexture: {fileID: 8400000, guid: 920f0b93f498e7841b562da86522f1a0, type: 2}
   CloudMapShader: {fileID: 7200000, guid: a5ba9240e67db3f49a3c8949ca02a0d2, type: 3}
   ShoreColor: {r: 0, g: 0, b: 0, a: 0}

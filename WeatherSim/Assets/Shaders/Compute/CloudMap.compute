@@ -8,6 +8,11 @@
 int width;
 int height;
 float time;
+
+float cloudCoverage;
+float cloudIntensity;
+float cloudShape;
+
 int centerNumber;
 StructuredBuffer<float> centers;
 
@@ -51,20 +56,20 @@ float makeCloud(float2 uv)
     const float cloudscale = 1.;
     const float clouddark = 0.8;
     const float cloudlight = 0.3;
-    const float cloudcover = 0.2;
+    const float cloudcover = cloudCoverage;
     const float cloudalpha = 2.0;
 
     const float2x2 m = float2x2(1.6, 1.2, -1.2, 1.6);
     
     float2 tuv = uv;
     float scaledTime = 0.03f * time;
-    float q = fbm(tuv * cloudscale * 0.5);
+    float q = fbm(tuv * cloudscale * cloudShape);//0.5
     
     //ridged noise shape
     float r = 0.0;
     tuv *= cloudscale;
     tuv -= q - scaledTime;
-    float weight = 0.8;
+    float weight = cloudIntensity;//1.9
     for (int i = 0; i < 8; i++)
     {
         r += abs(weight * noise(tuv));
@@ -77,7 +82,7 @@ float makeCloud(float2 uv)
     tuv = uv;
     tuv *= cloudscale;
     tuv -= q - scaledTime;
-    weight = 0.7;
+    weight = 0.7;//0.7
     for (int j = 0; j < 8; j++)
     {
         f += weight * noise(tuv);
@@ -184,14 +189,17 @@ void GenerateCloudMapCS(uint3 id : SV_DispatchThreadID)
     
     float theta = u * 2.f * PI;
     float phi = (v - 0.5f) * PI;
-
-    float x = cos(phi) * cos(theta);
+    /*
+    float x = cos(phi + 30.0f) * cos(theta + 90.0f);
+    float y = sin(phi + 30.0f);
+    float z = cos(phi + 30.0f) * sin(theta + 90.0f);
+    */
+    float x = cos(phi) * cos(theta + 1.0f);
     float y = sin(phi);
-    float z = cos(phi) * sin(theta);
-    
+    float z = cos(phi) * sin(theta + 0.5f);
     //float2 cylCoord = float2(atan2(z, -x) / PI, y * 0.5 + 0.5);
 
-    //float2 uv = float2(x, z);
+    //float2 uv = float2(x1, z1);
     float2 uv = float2(id.x / (float) width, id.y / (float) height) * 3.0f;
     float s1 = sample(uv);
     uv = float2(x, z);

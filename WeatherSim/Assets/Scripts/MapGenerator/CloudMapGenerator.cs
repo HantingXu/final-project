@@ -33,6 +33,9 @@ public class CloudMapGenerator : IMapGenerator
         parameter.CloudMapShader.SetInt("width", width);
         parameter.CloudMapShader.SetInt("height", height);
         parameter.CloudMapShader.SetInt("centerNumber", centerNumber);
+        parameter.CloudMapShader.SetFloat("cloudCoverage", parameter.CloudCoverage);
+        parameter.CloudMapShader.SetFloat("cloudShape", parameter.CloudShape);
+        parameter.CloudMapShader.SetFloat("cloudIntensity", parameter.CloudIntensity);
         parameter.CloudMapShader.SetBuffer(cloudKernel, "centers", centerBuffer);
         parameter.CloudMapShader.SetTexture(0, "Result", parameter.CloudMapTexture);
         // Dispatch the compute shader
