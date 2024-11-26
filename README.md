@@ -134,6 +134,7 @@ Tempurature map is generated based the latitude and height of the globe. In this
 #### Biome Map Generation & Microscopic Cloud Generation (Hanting)
 
 - **Biome Map Generation**
+
 Biome map is generated based on two maps temperature map and humidity map. User can provide a texture map that assigns different colors that represents different biomes. The provided texture should take temperature in y-axis and humidity in x-axis, like the picture shown below.
 
 |![biomeLookup](https://github.com/user-attachments/assets/12f9d36d-89f4-4083-8a85-4a088ad3bae4)|![biomePlanet](https://github.com/user-attachments/assets/f44623f8-050d-4ad7-9570-1fabf72836ef)|
