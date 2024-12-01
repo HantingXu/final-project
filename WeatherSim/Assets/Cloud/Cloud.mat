@@ -54,23 +54,25 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BaseThreshold: 0.19
-    - _Darkness: 0.35
-    - _DetailRatio: 0.18
-    - _DetailThreshold: 0.29
-    - _LightAbsorption: 0.05
+    - _BaseThreshold: 0.18
+    - _Darkness: 0.21
+    - _DetailRatio: 0.3
+    - _DetailThreshold: 0.34
+    - _LightAbsorption: 1.17
     - _MoveSpeed: 0.1
-    - _NoiseScale: 60
+    - _NoiseScale: 30.75
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Timer: 5.888251
+    - _Timer: 38.838223
     m_Colors:
-    - _BoundsMax: {r: 1500, g: 88, b: 1500, a: 0}
-    - _BoundsMin: {r: -1500, g: -12, b: -1500, a: 0}
-    - _CloudBaseColor: {r: 1, g: 1, b: 1, a: 0}
-    - _CloudShadowColor: {r: 0, g: 0.7769139, b: 1, a: 0}
+    - _BoundsMax: {r: 1500, g: 100.5, b: 1500, a: 0}
+    - _BoundsMin: {r: -1500, g: -24.5, b: -1500, a: 0}
+    - _CloudBaseColor: {r: 0.9811321, g: 0.88073146, b: 0.7250504, a: 0}
+    - _CloudDarkBaseColor: {r: 0.35107383, g: 0.46625823, b: 0.61006284, a: 0}
+    - _CloudDarkShadowColor: {r: 0.24884297, g: 0.25883946, b: 0.33962262, a: 0}
+    - _CloudShadowColor: {r: 0.06983498, g: 0.5243611, b: 0.67295593, a: 0}
     - _LightDirection: {r: 0, g: 0, b: 0, a: 0}
-    - _SunDirection: {r: -0.3213938, g: -0.76604444, b: 0.5566705, a: 0}
+    - _SunDirection: {r: 0, g: 0, b: 1, a: 0}
     - _SunPosition: {r: 0, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &944830904677154348

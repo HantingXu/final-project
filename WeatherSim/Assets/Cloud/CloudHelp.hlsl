@@ -34,6 +34,12 @@ float Remap(float originalVal, float originalMin, float originalMax, float newMi
     return newMin + ((originalVal - originalMin) / (originalMax - originalMin)) * (newMax - newMin);
 }
 
+float ComputeBrightness(float3 sunDirection)
+{
+    float brightness = dot(sunDirection, float3(0.0, 1.0, 0.0));
+    return Remap(brightness, -1.0, 1.0, 0.0, 1.0);
+}
+
 float sampleDensity(float3 rayPos) 
 {
     /*
@@ -86,8 +92,8 @@ float ComputeCloudMapDensity(float2 xzPosition, float3 boundMin, float3 boundMax
     //return 0.0f;
 }
 
-float LightMarch(float3 boundMin, float3 boundMax, float3 position) {
-    float3 dirToLight = normalize(_SunDirection);
+float LightMarch(float3 boundMin, float3 boundMax, float3 sunDirection, float3 position) {
+    float3 dirToLight = -sunDirection;
     float dstInsideBox = RayBoxDst(boundMin, boundMax, position, 1/dirToLight).y;
 
     int numStepsLight = 30;
@@ -121,7 +127,7 @@ float phase(float a)
     return phaseParams.z + hgBlend*phaseParams.w;
 }           
 
-void DrawCloud_float(float3 cameraPos, float3 viewDirection, float3 boundMin, float3 boundMax, float depth, float2 uv, out float4 col)
+void DrawCloud_float(float3 cameraPos, float3 sunDirection, float3 viewDirection, float3 boundMin, float3 boundMax, float depth, float2 uv, out float4 col)
 {
     float3 rayOrigin = cameraPos;
     float3 rayDirection = viewDirection;
@@ -131,13 +137,13 @@ void DrawCloud_float(float3 cameraPos, float3 viewDirection, float3 boundMin, fl
     float dstInsideBox = rayToContainerInfo.y;
 
     // Phase function makes clouds brighter around sun
-    float cosAngle = dot(rayDirection, normalize(_SunDirection));
+    float cosAngle = dot(rayDirection, -sunDirection);
     float phaseVal = phase(cosAngle);
 
     // point of intersection with the cloud container
     float3 entryPoint = rayOrigin + rayDirection * dstToBox;
 
-    float dstTravelled = SAMPLE_TEXTURE2D_LOD(_BlueNoise, SamplerState_Linear_Repeat, uv, 0.0f).r * _NoiseScale;
+    float dstTravelled = SAMPLE_TEXTURE2D_LOD(_BlueNoise, SamplerState_Linear_Repeat, uv * 100.0f, 0.0f).r * _NoiseScale;
     float dstLimit = min(depth-dstToBox, dstInsideBox);
 
     const float stepSize = 11;
@@ -153,7 +159,7 @@ void DrawCloud_float(float3 cameraPos, float3 viewDirection, float3 boundMin, fl
         
         if (density > 0) {
             totDensity += density;
-            float lightTransmittance = LightMarch(boundMin, boundMax, rayOrigin);
+            float lightTransmittance = LightMarch(boundMin, boundMax, sunDirection, rayOrigin);
             lightEnergy += density * stepSize * transmittance * ComputeCloudMapDensity(rayOrigin.xz, boundMin, boundMax) * lightTransmittance * phaseVal;
             transmittance *= exp(-density * stepSize);
         
@@ -164,7 +170,13 @@ void DrawCloud_float(float3 cameraPos, float3 viewDirection, float3 boundMin, fl
         }
         dstTravelled += stepSize;
     }
-    float3 cloudCol = lightEnergy * _CloudBaseColor + (1 - lightEnergy) * _CloudShadowColor;// + (1.0f - lightEnergy) * float3(1.0f, 1.0f, 0.0f);
+    float brightness = ComputeBrightness(sunDirection);
+    
+    float3 cloudBaseCol = lerp(_CloudBaseColor, _CloudDarkBaseColor, brightness);
+    float3 cloudShadowCol = lerp(_CloudShadowColor, _CloudDarkShadowColor, brightness);
+    lightEnergy = float3(clamp(lightEnergy.x, 0.0, 1.6), clamp(lightEnergy.y, 0.0, 1.0), clamp(lightEnergy.z, 0.0, 1.0));
+    float3 cloudCol = lightEnergy * cloudBaseCol + (1.6 - lightEnergy) * cloudShadowCol;// + (1.0f - lightEnergy) * float3(1.0f, 1.0f, 0.0f);
+    //float3 cloudCol = lightEnergy * _CloudBaseColor + (1 - lightEnergy) * _CloudShadowColor;// + (1.0f - lightEnergy) * float3(1.0f, 1.0f, 0.0f);
     col = float4(cloudCol, lightEnergy.r);
      //           return float4(col,0);
 }
