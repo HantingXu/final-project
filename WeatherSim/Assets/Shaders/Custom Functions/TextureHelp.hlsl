@@ -35,11 +35,12 @@ void CalculateSmoothNormal_float(float3 pos, out float3 normal)
 {
     float radius = length(pos);
     float3 unitPos = normalize(pos);
-    float u = atan2(unitPos.z, unitPos.x) / (2 * PI) + 0.5f;
+
+    float u = atan2(unitPos.z, unitPos.x) / (2.0f * PI) + 0.5f;
     float v = asin(unitPos.y) / PI + 0.5f;
 
     float offsetU = 1.0f / 1024.0f;
-    float offsetV = 1.0f / 512.0f;
+    float offsetV = 1.0f / 512.0f; 
 
     float heightCenter = _HeightMap.SampleLevel(sampler_point_clamp, float2(u, v), 0).r;
     float heightUPos = _HeightMap.SampleLevel(sampler_point_clamp, float2(u + offsetU, v), 0).r;
@@ -47,16 +48,18 @@ void CalculateSmoothNormal_float(float3 pos, out float3 normal)
     float heightVPos = _HeightMap.SampleLevel(sampler_point_clamp, float2(u, v + offsetV), 0).r;
     float heightVNeg = _HeightMap.SampleLevel(sampler_point_clamp, float2(u, v - offsetV), 0).r;
 
-    float3 posUPos = normalize(uvToPos(float2(u + offsetU, v))) * (radius + heightUPos);
-    float3 posUNeg = normalize(uvToPos(float2(u - offsetU, v))) * (radius + heightUNeg);
-    float3 posVPos = normalize(uvToPos(float2(u, v + offsetV))) * (radius + heightVPos);
-    float3 posVNeg = normalize(uvToPos(float2(u, v - offsetV))) * (radius + heightVNeg);
+    // Convert UV coordinates back to 3D positions on the sphere
+    float3 posCenter = uvToPos(float2(u, v)) * (radius + heightCenter);
+    float3 posUPos = uvToPos(float2(u + offsetU, v)) * (radius + heightUPos);
+    float3 posUNeg = uvToPos(float2(u - offsetU, v)) * (radius + heightUNeg);
+    float3 posVPos = uvToPos(float2(u, v + offsetV)) * (radius + heightVPos);
+    float3 posVNeg = uvToPos(float2(u, v - offsetV)) * (radius + heightVNeg);
 
-    float3 tangentU = 2 * (posUPos - posUNeg);   // Tangent in the U direction
-    float3 tangentV = 2 * (posVPos - posVNeg);   // Tangent in the V direction
+    // Calculate tangent vectors
+    float3 tangentU = posUPos - posUNeg; // Tangent in U direction
+    float3 tangentV = posVPos - posVNeg; // Tangent in V direction
 
-    // Step 6: Compute normal as average of cross-products
-    normal = normalize(float3(length(tangentU), length(tangentV), sqrt(1 - dot(tangentU, tangentU) - dot(tangentV, tangentV))));
+    normal = normalize(cross(tangentU, tangentV));
 
-    normal = mul(unity_ObjectToWorld, normal);
+    normal = normalize(mul((float3x3)unity_ObjectToWorld, normal));
 }

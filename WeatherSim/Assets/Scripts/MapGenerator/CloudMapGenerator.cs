@@ -73,7 +73,7 @@ public class CloudMapGenerator : IMapGenerator
         for (int i = 0; i < centerNumber * 2; i++)
         {
             centers.Add(Random.Range(0.03f, 0.98f));
-            Debug.Log(centers[i]);
+            //Debug.Log(centers[i]);
         }
     }
 

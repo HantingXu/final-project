@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    public Material weatherMaterial;
+
     [Header("Control Stats")]
     [SerializeField] private float throttleIncrement = 0.1f;
     [SerializeField] private float maxThrust = 200.0f;
@@ -45,6 +47,7 @@ public class PlayerController : MonoBehaviour
     {
         //_rollPitch = _rollPitchAction.ReadValue<Vector2>();
         CollectInput();
+        weatherMaterial.SetVector("_PlayerPosition", this.transform.position);
     }
 
     private void FixedUpdate()

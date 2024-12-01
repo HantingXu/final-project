@@ -18,8 +18,12 @@ float3 intensify(float3 color, float intensity) {
 
 void AssignCorrectColor_float(float2 uv, float3 defaultColor, float3 rainyColor, float3 snowyColor, float3 cloudyColor, float3 sunnyColor, float3 partlyCloudyColor, out float3 color, out float intensity)
 {
-    float weatherType = _WeatherMap.SampleLevel(sampler_point_clamp, uv, 0).r;
-    intensity = _WeatherMap.SampleLevel(sampler_point_clamp, uv, 0).r;
+    float v = uv.y;
+    float latitude = (v - 0.5f) * PI;
+    float adjustedV = 0.5f + 0.5f * sin(latitude);
+    float2 uv2 = float2(uv.x, adjustedV);
+    float weatherType = _WeatherMap.SampleLevel(sampler_point_clamp, uv2, 0).r;
+    intensity = _WeatherMap.SampleLevel(sampler_point_clamp, uv2, 0).g;
     if (weatherType == 1.0) {
         color = rainyColor * intensity;
     }
@@ -38,4 +42,6 @@ void AssignCorrectColor_float(float2 uv, float3 defaultColor, float3 rainyColor,
     else {
         color = defaultColor;
     }
+
+    //color = float3(uv2.x, uv2.y, 0.f);
 }
