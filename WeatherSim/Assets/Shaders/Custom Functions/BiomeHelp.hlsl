@@ -45,6 +45,23 @@ float InFoamRange(float2 uv, float threshold)
     return inRange;//step(inRange, 0.00001);
 }
 
+void ComputeGlobeBiomeColor_float(float2 mapUV, float2 uv, float height, out float3 col)
+{
+    float3 biomeColor = _BiomeTex.SampleLevel(SamplerState_Linear_Repeat, uv, 0);
+    float2 UV = mapUV;
+    float height1 = _HeightMap.SampleLevel(SamplerState_Linear_Repeat, UV, 0);
+    float heightThresh = 0.002f;
+    if  ( height1 < heightThresh)
+    {
+        float normalizeHeight = Remap(height1, 0.0, heightThresh, 0.0f, 1.0f);//float3(0,0,1);
+        col = lerp(_WaterColor, biomeColor, normalizeHeight);
+    }
+    else
+    {
+        col = biomeColor;
+    }
+}
+
 void ComputeBiomeColor_float(float2 mapUV, float2 uv, float height, out float3 col)
 {
     float timer = _Time;

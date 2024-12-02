@@ -24,13 +24,12 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         if (_switchViewAction.IsPressed())
+        {
             _index = (_index + 1) % 4;
+        }
         _target = povs[_index].position;
-    }
-
-    private void FixedUpdate()
-    {
         transform.position = Vector3.MoveTowards(transform.position, _target, Time.deltaTime * speed);
         transform.forward = povs[_index].forward;
     }
+
 }

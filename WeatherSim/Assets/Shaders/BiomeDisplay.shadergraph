@@ -1184,7 +1184,7 @@
     "m_Group": {
         "m_Id": ""
     },
-    "m_Name": "ComputeBiomeColor (Custom Function)",
+    "m_Name": "ComputeGlobeBiomeColor (Custom Function)",
     "m_DrawState": {
         "m_Expanded": true,
         "m_Position": {
@@ -1221,7 +1221,7 @@
         "m_SerializableColors": []
     },
     "m_SourceType": 0,
-    "m_FunctionName": "ComputeBiomeColor",
+    "m_FunctionName": "ComputeGlobeBiomeColor",
     "m_FunctionSource": "f95eda207690b1f4d8238be9952041b1",
     "m_FunctionBody": "Enter function body here..."
 }
