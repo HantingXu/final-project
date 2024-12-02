@@ -40,5 +40,6 @@ Material:
     m_Ints: []
     m_Floats:
     - _PlaneSize: 5000
-    m_Colors: []
+    m_Colors:
+    - _WaterColor: {r: 0.45105013, g: 0.6810477, b: 0.7924528, a: 0}
   m_BuildTextureStacks: []

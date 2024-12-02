@@ -134,12 +134,12 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DayColor: {r: 0.2015544, g: 0.6311864, b: 0.8113208, a: 0}
+    - _DayColor: {r: 0.3233652, g: 0.62243277, b: 0.9433962, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GroundColor: {r: 0.3168189, g: 0.51268554, b: 0.52201253, a: 0}
-    - _GroundDayColor: {r: 0.8679245, g: 0.6925208, b: 0.43396217, a: 0}
-    - _GroundNightColor: {r: 0.37106913, g: 0.2780764, b: 0.25088006, a: 0}
-    - _NightColor: {r: 0, g: 0.19374743, b: 0.40251565, a: 0}
+    - _GroundDayColor: {r: 0.7300517, g: 0.8616352, b: 0.62590474, a: 0}
+    - _GroundNightColor: {r: 0.20754719, g: 0.18455496, b: 0.17556664, a: 0}
+    - _NightColor: {r: 0.061409697, g: 0.2386435, b: 0.4339623, a: 0}
     - _SkyColor: {r: 0.34905648, g: 0.7059024, b: 1, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SunDirection: {r: 0, g: 0, b: 0, a: 0}

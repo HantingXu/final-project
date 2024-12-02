@@ -17,6 +17,7 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         _switchViewAction = _refPlayerControl.actions["SwitchView"];
+        transform.position = povs[_index].position;
     }
 
     // Update is called once per frame

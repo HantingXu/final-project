@@ -40,19 +40,20 @@ float ComputeBrightness(float3 sunDirection)
     return Remap(brightness, -1.0, 1.0, 0.0, 1.0);
 }
 
-float sampleDensity(float3 rayPos) 
+float sampleDensity(float3 rayPos, float weather) 
 {
     /*
     float3 shapeSamplePos = rayPos * 0.5f * 0.001; //+ shapeOffset * offsetSpeed;
     float4 shapeNoise = _NoiseTex.SampleLevel(SamplerState_Trilinear_Repeat, shapeSamplePos, 0);
     float density = max(0, shapeNoise.r - 0.3f) *  1.0f * 0.005f;*/
+    
 
-    float3 shapeSamplePos = rayPos * 0.5f * 0.001 + float3(_Timer * 0.1f, _Timer * 0.2f, _Timer * 0.3f) * _MoveSpeed; //+ shapeOffset * offsetSpeed;
+    float3 shapeSamplePos = (rayPos * 0.5f * 0.001) * _CloudScale + float3(_Timer * 0.1f, _Timer * 0.2f, _Timer * 0.3f) * _MoveSpeed; //+ shapeOffset * offsetSpeed;
     float4 shapeNoise = _NoiseTex.SampleLevel(SamplerState_Trilinear_Repeat, shapeSamplePos, 0)  - _BaseThreshold;
     float4 detailNoise = _DetailTex.SampleLevel(SamplerState_Trilinear_Repeat, shapeSamplePos, 0) - _DetailThreshold;
     float baseDensity = max(0, shapeNoise.r - _BaseThreshold) *  0.01f;
     float baseFBM = dot(shapeNoise.gba, float3(0.56, 0.25, 0.125));
-    baseDensity = Remap(shapeNoise.r, saturate((1.0f - baseFBM) * 0.44f), 1.0, 0, 1.0);
+    baseDensity = Remap(shapeNoise.r, saturate((1.0f - baseFBM) * 0.84f), 1.0, 0, 1.0);
 
     float detailDensity = max(0, detailNoise.r - _DetailThreshold) *  0.01f;
     float detailFBM = dot(detailNoise.gba, float3(0.5, 0.25, 0.125));
@@ -83,16 +84,25 @@ void Test_float(float3 cameraPos, float3 viewDirection, float3 boundMin, float3 
         col = float4(1,0.4,0.4,1);
 }
 
+float2 CalculateUV(float2 uv)
+{
+    float v = uv.y;
+    float latitude = (v - 0.5f) * PI;
+    float adjustedV = 0.5f + 0.5f * sin(latitude);
+    return float2(uv.x, adjustedV);
+}
+
 float ComputeCloudMapDensity(float2 xzPosition, float3 boundMin, float3 boundMax)
 {
     float2 xzTemp = xzPosition - boundMin.xz;
     float2 boundTotal = boundMax.xz - boundMin.xz;
-    float2 uv = xzTemp / boundTotal; //_WeatherMap.SampleLevel(SamplerState_Linear_Repeat)
+    float2 uv = CalculateUV(xzTemp / boundTotal); //_WeatherMap.SampleLevel(SamplerState_Linear_Repeat)
+    //float2 uv = xzTemp / boundTotal;
     return SAMPLE_TEXTURE2D_LOD(_WeatherMap, SamplerState_Linear_Repeat, uv, 0.0f).r;
     //return 0.0f;
 }
 
-float LightMarch(float3 boundMin, float3 boundMax, float3 sunDirection, float3 position) {
+float LightMarch(float3 boundMin, float3 boundMax, float3 sunDirection, float3 position, float weather) {
     float3 dirToLight = -sunDirection;
     float dstInsideBox = RayBoxDst(boundMin, boundMax, position, 1/dirToLight).y;
 
@@ -105,7 +115,7 @@ float LightMarch(float3 boundMin, float3 boundMax, float3 sunDirection, float3 p
 
     for (int step = 0; step < numStepsLight; step ++) {
         position += dirToLight * stepSize;
-        totalDensity += max(0, sampleDensity(position) * stepSize);
+        totalDensity += max(0, sampleDensity(position, weather) * stepSize);
     }
 
     float transmittance = exp(-totalDensity * lightAbsorptionTowardSun);
@@ -155,12 +165,14 @@ void DrawCloud_float(float3 cameraPos, float3 sunDirection, float3 viewDirection
     while (dstTravelled < dstLimit) 
     {
         rayOrigin = entryPoint + rayDirection * dstTravelled;
-        float density = sampleDensity(rayOrigin);
-        
+        float weather = ComputeCloudMapDensity(rayOrigin.xz, boundMin, boundMax);
+        float density = sampleDensity(rayOrigin, weather);// * weather;
+        density = density * weather;
+
         if (density > 0) {
             totDensity += density;
-            float lightTransmittance = LightMarch(boundMin, boundMax, sunDirection, rayOrigin);
-            lightEnergy += density * stepSize * transmittance * ComputeCloudMapDensity(rayOrigin.xz, boundMin, boundMax) * lightTransmittance * phaseVal;
+            float lightTransmittance = LightMarch(boundMin, boundMax, sunDirection, rayOrigin, weather);
+            lightEnergy += density * stepSize * transmittance * lightTransmittance * phaseVal;
             transmittance *= exp(-density * stepSize);
         
             // Exit early if T is close to zero as further samples won't affect the result much
