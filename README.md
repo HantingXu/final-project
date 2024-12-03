@@ -57,10 +57,10 @@ Our project was inspired by Nick's blog post, where they discussed how to proced
 |Week 1 (2024/11/06 to 2024/11/13)|Procedural terrain generation|Water Map generation|
 ||Height map generation|Cloud map generation|
 |||Temperature map generation|
-|Week 2 (2024/11/13 to 2024/11/20)|Vegetation and environment modeling|Weather transition|
-|Week 3 (2024/11/20 to 2024/11/27)|Environmental assets displacement|Water and terrain shader design|
-|Week 4 (2024/11/27 to 2024/12/02)| Design the cloud shader|Rain shader design|
-||Snow shader design if time allowed|Wet effect design if time allowed|
+|Week 2 (2024/11/13 to 2024/11/20)|Weather Map|Cloud Rendering|
+|Week 3 (2024/11/20 to 2024/11/27)|Microscopic view foundation|Volumetric Cloud & Player|
+|Week 4 (2024/11/27 to 2024/12/02)|Weather shaders|Skybox shader|
+||Weather manager & weather transition|Water shader|
 
 
 ## Milestone 1
@@ -224,13 +224,61 @@ The procedural skybox shader takes in 4 color - day sky color, night sky color, 
 |:--:|:--:|
 |*Skybox Visualization*|*User Control*|
 
+
+#### Microscopic view & Weather Shaders & Weather Transition (Christine)
+
+- **Microscopic view**
+  
+The Microscopic View provides a detailed representation of weather effects on a smaller scale. Unlike the macroscopic view, which uses a sphere to encapsulate the environment, the microscopic view employs a dynamically deformed plane. I utilized cosine-weighted UV mapping to minimize distortions, especially near the poles, ensuring accurate texture sampling.
+
+|![](https://github.com/user-attachments/assets/fd7f3493-d49c-471a-8fb5-72eecd30b2bf)|
+|:--:|
+|*Microscopic View*|
+
+- **Weather Shaders**
+  
+  Our system incorporates specialized post-process shaders to render various weather effects.
+  
+  - **Rain Shader**
+
+The Rain Shader simulates realistic rain by rendering raindrops with varying intensities and speeds. It dynamically adjusts the number of raindrop layers based on the current intensity, ensuring a smooth visual experience.
+
+|![lightrain](https://github.com/user-attachments/assets/7aeed60d-fdf7-4635-94d5-084e234ccc0f)|![heavy](https://github.com/user-attachments/assets/9cede870-7c54-47a6-b0e0-2e27009289c1)|
+|:--:|:--:|
+|*Light Rain*|*Heavy Rain*|
+
+  - **Snow Shader**
+
+The Snow Shader replicates the serene effect of snow by rendering snowflakes with varying intensities and movements. It dynamically adjusts the number of snowflake layers based on the current intensity, ensuring a smooth and realistic snowfall.
+
+|![lightsnow](https://github.com/user-attachments/assets/504a42f9-fbc1-4e49-9f22-cc85880cb924)|![heavy](https://github.com/user-attachments/assets/b2f96175-1956-4a08-a0c3-04b46385d99c)|
+|:--:|:--:|
+|*Light Snow*|*Heavy Snow*|
+
+- **Weather Transition**
+  
+The Weather Transition component manages the smooth transition between different weather states. It maintains the current weather type and intensity, dynamically reads target weather conditions from a weather map using compute shaders, and interpolates between the current and target states to ensure seamless visual transitions. The current weather type and intensity is passed into the weather shaders and the skybox for rendering.
+
+https://github.com/user-attachments/assets/1f362951-220c-4253-a6d8-addd978ed6ac
+
+https://github.com/user-attachments/assets/a54bbe0a-1da9-4395-9539-ebdc514e5b9e
+
+https://github.com/user-attachments/assets/2b98ba5b-1197-429b-ab4e-fe574b653743
+
+
+#### References
+- [*Snow Shader*](https://www.shadertoy.com/view/ldsGDn)
+
 ### Final Results
+
+https://github.com/user-attachments/assets/588698cf-8f5f-458a-aaef-0bbef75492ac
+
+https://github.com/user-attachments/assets/4b46032d-2c51-4b5e-a67e-8a5246e3a6ad
+
 ### Post Mortem
 
+We successfully developed a dynamic weather system that can be seamlessly integrated into any game, providing users with extensive control over various weather parameters. We also delivered a working project that effectively demonstrates the system's capabilities and smooth weather transitions.
 
-Submission:
-- Push all your code / files to your repository
-- Come to class ready to present your finished project
-- Update your README with two sections 
-  - final results with images and a live demo if possible
-  - post mortem: how did your project go overall? Did you accomplish your goals? Did you have to pivot?
+However, the demonstration scene is somewhat simplistic, featuring terrain with low levels of detail and lacking procedurally placed assets, which limits the visual complexity and realism. Additionally, while we have the underlying logic for cloudy and sunny weather, we only implemented shaders for rain and snow. 
+
+For future work, we aim to enhance the scene's visual richness and expand our shader repertoire to include all planned weather types.
