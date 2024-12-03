@@ -220,7 +220,7 @@ The stylized water is made with simple foam near the shore and waves by sampling
 
 The procedural skybox shader takes in 4 color - day sky color, night sky color, day land color, night land color. Computing the dot product between the up vector and main light direction, I lerp between these colors to get the current color and draw the sun with the similar method. By rotating the directional light, the player can see the day and night changes.
 
-|![skybox](Images/skyBox.png)|![](Images/skyboxControl.png)|
+|![skybox](Images/skyBox.png)|![](Images/SkyboxControl.png)|
 |:--:|:--:|
 |*Skybox Visualization*|*User Control*|
 
