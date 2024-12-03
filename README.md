@@ -189,8 +189,44 @@ I also created a shader to showcase our dyanmic weather system, where each color
 #### References
 - [*Sebastian Lague's Coding Adventure: Clouds*](https://www.youtube.com/watch?v=4QOcCGI6xOU)
 
-## Final submission (due 12/2)
-Time to polish! Spen this last week of your project using your generator to produce beautiful output. Add textures, tune parameters, play with colors, play with camera animation. Take the feedback from class critques and use it to take your project to the next level.
+## Final
+### Completed Tasks
+#### Plane Controller & Volumetric Cloud & Stylized Water & Procedural Skybox (Hanting)
+- **Plane Controller**
+
+To travel on the micropic scale, I made a plane controller that can yaw, pitch, roll and throttle by simple controls.
+
+|![](Images/planeController.png)|
+|:--:|
+|*Plane Control*|
+
+- **Volumetric Cloud**
+
+By getting the light transmittance from ray marching and sampling the cloud density from the cloud map and 3D noise texture, I render the cloud in some cartoon style. In this way, the player can freely traveling in or out of the clouds as they want. Also, they can change the density, color, light absorbtion of the clouds in the shader as they want.
+
+|![cloud](Images/cloudFinal.png)|![](Images/cloudControl.png)|
+|:--:|:--:|
+|*Cloud Visualization*|*User Control*|
+
+- **Stylized Water**
+
+The stylized water is made with simple foam near the shore and waves by sampling and mixing wave normal texture. Players can adjust the water color as they want.
+
+|![](Images/water.png)|
+|:--:|
+|*Procedural Sea*|
+
+- **Procedural Skybox**
+
+The procedural skybox shader takes in 4 color - day sky color, night sky color, day land color, night land color. Computing the dot product between the up vector and main light direction, I lerp between these colors to get the current color and draw the sun with the similar method. By rotating the directional light, the player can see the day and night changes.
+
+|![cloud](Images/Skybox.png)|![](Images/skyboxControl.png)|
+|:--:|:--:|
+|*Skybox Visualization*|*User Control*|
+
+### Final Results
+### Post Mortem
+
 
 Submission:
 - Push all your code / files to your repository
