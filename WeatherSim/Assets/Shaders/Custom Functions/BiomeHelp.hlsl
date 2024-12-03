@@ -62,15 +62,15 @@ void ComputeGlobeBiomeColor_float(float2 mapUV, float2 uv, float height, out flo
     }
 }
 
-void ComputeBiomeColor_float(float2 mapUV, float2 uv, float height, out float3 col)
+void ComputeBiomeColor_float(float2 mapUV, float2 uv, float height, out float3 col, out float inWater)
 {
     float timer = _Time;
-    float heightChange = sin(timer * 2.0f) * 0.001f - 0.001f;
+    float heightChange = sin(timer * 2.0f) * 0.0008f - 0.0008f;
     float3 biomeColor = _BiomeTex.SampleLevel(SamplerState_Linear_Repeat, uv, 0);
 
     float2 UV = CalculateUV(mapUV);
     float height1 = _HeightMap.SampleLevel(SamplerState_Linear_Repeat, UV, 0) + heightChange;
-    float heightThresh = 0.002f - heightChange * 0.6f;
+    float heightThresh = 0.0016f - heightChange * 0.6f;
     if  ( height1 < heightThresh)
     {
         float normalizeHeight = Remap(height1, 0.0, heightThresh, 0.0f, 1.0f);//float3(0,0,1);
@@ -78,9 +78,11 @@ void ComputeBiomeColor_float(float2 mapUV, float2 uv, float height, out float3 c
         float foam =  step(_FoamTex.SampleLevel(SamplerState_Linear_Repeat, UV * 100.0f * float2(2.0f, 1.0f) + float2(2.0f * timer, timer) * 0.4f, 0), 0.08 + normalizeHeight * 0.4f);
         float inFoam = (1.0f - InFoamRange(mapUV, heightThresh)) * foam;
         col = (1.0f - inFoam) * col + inFoam * float3(1,1,1);
+        inWater = 1.0f;
     }
     else
     {
         col = biomeColor;
+        inWater = 0.0f;
     }
 }

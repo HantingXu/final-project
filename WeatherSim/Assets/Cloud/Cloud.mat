@@ -64,7 +64,7 @@ Material:
     - _NoiseScale: 30.75
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Timer: 39.94576
+    - _Timer: 53.258816
     m_Colors:
     - _BoundsMax: {r: 50000, g: 4177.0034, b: 25000, a: 0}
     - _BoundsMin: {r: -50000, g: 2316.9966, b: -25000, a: 0}
@@ -73,7 +73,7 @@ Material:
     - _CloudDarkShadowColor: {r: 0.17295593, g: 0.195077, b: 0.3333333, a: 0}
     - _CloudShadowColor: {r: 0.44634303, g: 0.59768116, b: 0.654088, a: 0}
     - _LightDirection: {r: 0, g: 0, b: 0, a: 0}
-    - _SunDirection: {r: -0.3213938, g: -0.76604444, b: 0.5566705, a: 0}
+    - _SunDirection: {r: 0, g: -1.0000001, b: -0.00000011920929, a: 0}
     - _SunPosition: {r: 0, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &944830904677154348
