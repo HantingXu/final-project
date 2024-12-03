@@ -5,7 +5,7 @@
 - [Design Doc](https://github.com/HantingXu/final-project?tab=readme-ov-file#design-doc)
 - [Milestone 1](https://github.com/HantingXu/final-project?tab=readme-ov-file#milestone-1)
 - [Milestone 2](https://github.com/HantingXu/final-project?tab=readme-ov-file#milestone-2)
-- Final
+- [Final](https://github.com/HantingXu/final-project?tab=readme-ov-file#final)
 
 ## Design Doc
 
