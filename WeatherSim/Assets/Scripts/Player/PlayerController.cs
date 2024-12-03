@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     public Material weatherMaterial;
+    public Material skyboxMaterial;
 
     [Header("Control Stats")]
     [SerializeField] private float throttleIncrement = 0.1f;
@@ -47,7 +48,14 @@ public class PlayerController : MonoBehaviour
     {
         //_rollPitch = _rollPitchAction.ReadValue<Vector2>();
         CollectInput();
-        weatherMaterial.SetVector("_PlayerPosition", this.transform.position);
+        if (WeatherSystem.Instance != null)
+        {
+            WeatherSystem.Instance.setPlayerPosition(this.transform.position);
+            weatherMaterial.SetFloat("_WeatherType", WeatherSystem.Instance.getCurrentWeatherType());
+            weatherMaterial.SetFloat("_WeatherIntensity", WeatherSystem.Instance.getCurrentWeatherIntensity());
+            skyboxMaterial.SetFloat("_WeatherType", WeatherSystem.Instance.getCurrentWeatherType());
+            skyboxMaterial.SetFloat("_WeatherIntensity", WeatherSystem.Instance.getCurrentWeatherIntensity());
+        }
     }
 
     private void FixedUpdate()

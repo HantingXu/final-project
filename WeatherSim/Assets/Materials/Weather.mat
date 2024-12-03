@@ -127,6 +127,8 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _WeatherIntensity: 0.012830909
+    - _WeatherType: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     - _intensity: 0.5

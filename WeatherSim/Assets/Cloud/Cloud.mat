@@ -64,7 +64,7 @@ Material:
     - _NoiseScale: 30.75
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Timer: 42.365696
+    - _Timer: 52.137806
     m_Colors:
     - _BoundsMax: {r: 50000, g: 4177.0034, b: 25000, a: 0}
     - _BoundsMin: {r: -50000, g: 2316.9966, b: -25000, a: 0}

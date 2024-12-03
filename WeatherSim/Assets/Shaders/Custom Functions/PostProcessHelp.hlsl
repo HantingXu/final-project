@@ -3,12 +3,12 @@ SAMPLER(sampler_point_clamp);
 
 void Snow(float intensity, float2 uv, out float3 col, out float alpha)
 {
-    const int MAX_LAYERS = 200; // Fixed maximum number of layers
+    const int MAX_LAYERS = 100; // Fixed maximum number of layers
     const int MIN_LAYERS = 5;   // Minimum layers for the effect
     float numLayers = lerp(float(MIN_LAYERS), float(MAX_LAYERS), intensity);
-    float DEPTH = lerp(0.5, 0.1, intensity);
-    float WIDTH = lerp(0.3, 0.8, intensity);
-    float SPEED = lerp(0.2, 1.8, intensity);
+    float DEPTH = lerp(0.5, 0.25, intensity);
+    float WIDTH = lerp(0.5, 0.5, intensity);
+    float SPEED = lerp(1.5, 1.5, intensity);
 
     const float3x3 p = float3x3(
         13.323122, 21.1212, 21.8112,
@@ -58,17 +58,17 @@ void Snow(float intensity, float2 uv, out float3 col, out float alpha)
 
 void Rain(float intensity, float2 uv, out float3 col, out float alpha)
 {
-    intensity = clamp(intensity, 0.f, 0.85f);
-    const int MAX_LAYERS = 60; 
-    const int MIN_LAYERS = 5; 
+    intensity = clamp(intensity, 0.f, 0.65f);
+    const int MAX_LAYERS = 60;
+    const int MIN_LAYERS = 5;
     float numLayers = lerp(float(MIN_LAYERS), float(MAX_LAYERS), intensity);
 
-    float DEPTH = lerp(0.5, 0.1, intensity);  
-    float SPEED = lerp(1.0, 4.0, intensity);    
+    float DEPTH = lerp(0.5, 0.1, intensity);
+    float SPEED = lerp(4.0, 4.0, intensity);
 
     // Raindrop properties
-    float dropLength = lerp(0.1, 0.3, intensity); 
-    float dropWidth = 0.005;                      
+    float dropLength = lerp(0.1, 0.3, intensity);
+    float dropWidth = 0.005;
 
     const float3x3 p = float3x3(
         13.323122, 21.1212, 21.8112,
@@ -94,7 +94,7 @@ void Rain(float intensity, float2 uv, out float3 col, out float alpha)
 
         // Vertical movement for rain
         q += float2(
-            0.0, 
+            0.0,
             SPEED * _Time.y / (1.0 + fi * layerDepth * 0.03)
         );
 
@@ -108,7 +108,7 @@ void Rain(float intensity, float2 uv, out float3 col, out float alpha)
         float fracY = fmod(q.y + r.y, 1.0);
 
         // Compute the raindrop shape
-        float xOffset = fmod(q.x + r.x, 1.0) - 0.5; 
+        float xOffset = fmod(q.x + r.x, 1.0) - 0.5;
 
         float d = abs(xOffset) / dropWidth + fracY / dropLength;
         d -= 1.0;
@@ -120,30 +120,21 @@ void Rain(float intensity, float2 uv, out float3 col, out float alpha)
         acc += t * layerWeight;
     }
 
-    alpha = saturate(length(acc) * 0.5 * intensity); 
-    col = float3(0.6, 0.7, 1.0);                   
+    alpha = saturate(length(acc) * 0.5 * intensity);
+    col = float3(0.6, 0.7, 1.0);
 }
 
 
-void ApplyWeatherEffect_float(float2 UV, float3 pos, out float3 col, out float alpha)
+void ApplyWeatherEffect_float(float weatherType, float weatherIntensity, float2 UV, out float3 col, out float alpha)
 {
-    const float size = 50000;
-    float2 uv = float2((pos.x + size) / (2.f * size), (pos.z + size * 0.5f) / size);
-    float v = uv.y;
-    float latitude = (v - 0.5f) * PI;
-    float adjustedV = 0.5f + 0.5f * sin(latitude);
-    float2 adjustedUV = float2(uv.x, adjustedV);
-    float weatherType = _WeatherMap.SampleLevel(sampler_point_clamp, adjustedUV, 0).r;
-    float intensity = _WeatherMap.SampleLevel(sampler_point_clamp, adjustedUV, 0).g;
-
     if (weatherType == 1.f) {
-        Rain(intensity, UV, col, alpha);
+        Rain(weatherIntensity, UV, col, alpha);
     }
     else if (weatherType == 2.f) {
-        Snow(intensity, UV, col, alpha);
+        Snow(weatherIntensity, UV, col, alpha);
     }
     else {
+        col = float3(0.0f, 0.0f, 0.0f);
         alpha = 0.f;
     }
-    //col = float3(weatherType / 2.f, intensity, 0.f);
 }

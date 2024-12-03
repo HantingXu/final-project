@@ -1,0 +1,28 @@
+#pragma kernel CSMain
+
+RWTexture2D<float4> WeatherMap;
+RWStructuredBuffer<float> OutputBuffer;
+
+float3 PlayerPos;
+
+[numthreads(1, 1, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    const float size = 50000;
+    float3 pos = PlayerPos;
+    float2 uv = float2((pos.x + size) / (2.f * size), (pos.z + size * 0.5f) / size);
+   
+    float v = uv.y;
+    float latitude = (v - 0.5f) * 3.141516f;
+    float adjustedV = 0.5f + 0.5f * sin(latitude);
+    float2 adjustedUV = float2(uv.x, adjustedV);
+    
+    uint2 pixelCoord;
+    pixelCoord.x = clamp((uint) (adjustedUV.x * (1024 - 1)), 0, 1024 - 1);
+    pixelCoord.y = clamp((uint) (adjustedUV.y * (512 - 1)), 0, 512 - 1);
+
+    
+    float2 weather = WeatherMap[pixelCoord].rg;
+    OutputBuffer[0] =  weather.x;
+    OutputBuffer[1] = weather.y;
+}
